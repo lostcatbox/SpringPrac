@@ -30,13 +30,12 @@ public class PostDto {
     }
 
 
-    @Builder
-    public PostDto(Long id, String postName, String content, LocalDateTime createdDate, LocalDateTime modifiedDate,User user){
-        this.id = id;
-        this.postName = postName;
-        this.content = content;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
-        this.user = user;
+    public PostDto(Post post){
+        this.id = post.getId();
+        this.postName = post.getPostName();
+        this.content = post.getContent();
+        this.createdDate = post.getCreatedDate();
+        this.modifiedDate = post.getModifiedDate();
+        this.user = post.getUser();
     }
 }

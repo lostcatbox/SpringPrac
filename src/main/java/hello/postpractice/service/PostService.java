@@ -46,30 +46,17 @@ public class PostService {
         List<Post> postList = postRepository.findAll();
         List<PostDto> postDtoList = new ArrayList<>();
 
-        for(Post posting : postList) {
-            PostDto postDto = PostDto.builder()
-                    .id(posting.getId())
-                    .postName(posting.getPostName())
-                    .content(posting.getContent())
-                    .createdDate(posting.getCreatedDate())
-                    .modifiedDate(posting.getModifiedDate())
-                    .user(posting.getUser())
-                    .build();
+        for(Post post : postList) {
+            PostDto postDto = new PostDto(post);
             postDtoList.add(postDto);
         }
         return postDtoList;
     }
     @Transactional
     public PostDto getPost(Long id){
-        Post posting = postRepository.findById(id).get();
-        PostDto postDto = PostDto.builder()
-                .id(posting.getId())
-                .postName(posting.getPostName())
-                .content(posting.getContent())
-                .createdDate(posting.getCreatedDate())
-                .modifiedDate(posting.getModifiedDate())
-                .user(posting.getUser())
-                .build();
+        Post post = postRepository.findById(id).get();
+        PostDto postDto = new PostDto(post);
+
         return postDto;
     }
     @Transactional
