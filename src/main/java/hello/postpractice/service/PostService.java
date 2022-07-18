@@ -60,7 +60,7 @@ public class PostService {
         return postDto;
     }
     @Transactional
-    public PostResponseDto getPost2(Long id){
+    public PostResponseDto getResponseDtoPost(Long id){
         Post posting = postRepository.findById(id).get();
         PostResponseDto postDto = new PostResponseDto(posting);
         return postDto;

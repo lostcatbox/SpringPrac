@@ -26,7 +26,7 @@ public class PostController {
     @GetMapping("/{id}")
     public String getpost(@PathVariable Long id, Model model, HttpSession session){
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        PostResponseDto postResponseDto = postService.getPost2(id);
+        PostResponseDto postResponseDto = postService.getResponseDtoPost(id);
         List<CommentDto> comments = postResponseDto.getComments();
 
         /*댓글관련*/
