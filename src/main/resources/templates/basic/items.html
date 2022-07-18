@@ -18,9 +18,10 @@
     <div class="leftTop">
         안녕하세요 <span sec:authentication="name"> </span>님 좋은하루 되세요!<br>
         소유 권한 : <span sec:authentication="authorities"></span> <br>
+        객체에 대해 : <span sec:authentication="principal"></span> <br>
     <form action="/logout" method="POST">
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <\button type="submit">Logout</button>
+        <button type="submit">Logout</button>
     </form>
     </div>
 
