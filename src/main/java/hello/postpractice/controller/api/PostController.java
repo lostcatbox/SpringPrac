@@ -7,6 +7,7 @@ import hello.postpractice.domain.UserSessionDto;
 import hello.postpractice.service.PostService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +31,11 @@ public class PostController {
         List<CommentDto> comments = postResponseDto.getComments();
 
         /*댓글관련*/
-        if (comments != null && !comments.isEmpty()){
+        if (!ObjectUtils.isEmpty(comments)){
             model.addAttribute("comments", comments);
         }
         /*유저관련*/
-        if (user != null){
+        if (!ObjectUtils.isEmpty(user)){
             model.addAttribute("user", user.getEmail());
 
             //게시판 작성자 본인인지 확인

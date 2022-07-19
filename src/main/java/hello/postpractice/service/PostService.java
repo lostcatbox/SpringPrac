@@ -34,7 +34,8 @@ public class PostService {
     }
     public Long editPost(Long id, PostDto postDto) {
         //회원을 확인하기위해 다시 디비조회?
-        Post post = postRepository.findById(id).get();
+        Post post = postRepository.findById(id).orElseThrow(()->
+                new IllegalArgumentException("id로 해당 포스트 없음"));
         postDto.setUser(post.getUser());
         return postRepository.save(postDto.toEntity()).getId();
     }
@@ -54,14 +55,16 @@ public class PostService {
     }
     @Transactional
     public PostDto getPost(Long id){
-        Post post = postRepository.findById(id).get();
+        Post post = postRepository.findById(id).orElseThrow(()->
+                new IllegalArgumentException("게시글 id 검색 실패: 해당 게시글이 존재하지 않습니다." + id));
         PostDto postDto = new PostDto(post);
 
         return postDto;
     }
     @Transactional
     public PostResponseDto getResponseDtoPost(Long id){
-        Post posting = postRepository.findById(id).get();
+        Post posting = postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("게시글 id 검색 실패: 해당 게시글이 존재하지 않습니다." + id));
         PostResponseDto postDto = new PostResponseDto(posting);
         return postDto;
     }

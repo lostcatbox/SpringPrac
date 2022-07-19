@@ -21,7 +21,8 @@ public class CommentService {
     /* CREATE */
     @Transactional
     public Long commentSave(String email, Long id, CommentDto commentDto) {
-        User user = userRepository.findByEmail(email).get();
+        User user = userRepository.findByEmail(email).orElseThrow(()->
+                new IllegalArgumentException("해당 id로 유저 없음"));
         Post post = postRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + id));
 
