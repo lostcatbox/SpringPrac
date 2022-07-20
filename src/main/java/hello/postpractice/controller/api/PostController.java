@@ -1,10 +1,12 @@
 package hello.postpractice.controller.api;
 
-import hello.postpractice.domain.CommentDto;
-import hello.postpractice.domain.PostDto;
-import hello.postpractice.domain.PostResponseDto;
-import hello.postpractice.domain.UserSessionDto;
+import hello.postpractice.domain.*;
+import hello.postpractice.model.response.CommonResult;
+import hello.postpractice.model.response.ListResult;
+import hello.postpractice.model.response.SingleResult;
 import hello.postpractice.service.PostService;
+import hello.postpractice.service.ResponseService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -15,54 +17,48 @@ import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("basic/post")
+@RequiredArgsConstructor
 public class PostController {
-    private PostService postService;
+    private final PostService postService;
+    private final ResponseService responseService;
 
-    public PostController(PostService postService){
-        this.postService = postService;
+    @GetMapping
+    public ListResult<PostDto> getposts(Model model){
+        List<PostDto> postDtoList = postService.getPostList();
+        return responseService.getListResult(postDtoList);
     }
 
     @GetMapping("/{id}")
-    public String getpost(@PathVariable Long id, Model model, HttpSession session){
+    public SingleResult<PostResponseDto> getpost(@PathVariable Long id, Model model, HttpSession session){
         UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         PostResponseDto postResponseDto = postService.getResponseDtoPost(id);
-        List<CommentDto> comments = postResponseDto.getComments();
-
-        /*댓글관련*/
-        if (!ObjectUtils.isEmpty(comments)){
-            model.addAttribute("comments", comments);
-        }
-        /*유저관련*/
-        if (!ObjectUtils.isEmpty(user)){
-            model.addAttribute("user", user.getEmail());
-
-            //게시판 작성자 본인인지 확인
-            if (postResponseDto.getUser().getEmail().equals(user.getEmail())) {
-                model.addAttribute("writer", true);
-            }
-        }
-        model.addAttribute("posting", postResponseDto);
-
-        return "basic/item";
+        return responseService.getSingleResult(postResponseDto);
+//
+//        /*유저관련*/
+//        if (!ObjectUtils.isEmpty(user)){
+//            model.addAttribute("user", user.getEmail());
+//
+//            //게시판 작성자 본인인지 확인
+//            if (postResponseDto.getUser().getEmail().equals(user.getEmail())) {
+//                model.addAttribute("writer", true);
+//            }
+//        }
     }
-    @PostMapping("/{id}/edit")
-    public String edit(@PathVariable Long id, @ModelAttribute PostDto postDto){
-        postService.editPost(id,postDto);
-        return "redirect:/basic/post/{id}";
+    @PostMapping
+    public SingleResult<PostDto> addpost(HttpSession session, @RequestBody PostDto postDto){
+        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        return responseService.getSingleResult(postService.savePost(user.getEmail(), postDto));
     }
-    @GetMapping("/{id}/delete")
-    public String delete(@PathVariable Long id){
+    @PutMapping("/{id}")
+    public SingleResult<PostDto> edit(@PathVariable Long id, @RequestBody PostDto postDto){
+        return responseService.getSingleResult(postService.editPost(id, postDto));
+    }
+    @DeleteMapping("/{id}")
+    public CommonResult delete(@PathVariable Long id){
         PostDto postDto = postService.getPost(id);
         postService.deletePost(postDto);
-        return "redirect:/basic/post/view";
-    }
-
-    @PostMapping("/add")
-    public String postadd(PostDto postDto, HttpSession session){
-        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        postService.savePost(user.getEmail(),postDto);
-        return "redirect:/basic/post/view";
+        return responseService.getSuccessResult();
     }
 }

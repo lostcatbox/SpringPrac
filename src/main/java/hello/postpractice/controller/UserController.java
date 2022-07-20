@@ -50,12 +50,6 @@ public class UserController {
         return "redirect:/login";
     }
 
-    @GetMapping("/main")
-    public String mainPage(Model model){
-        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        model.addAttribute("user", user);
-        return "/user/main";
-    }
     @GetMapping("/admin")
     public String adminPage(){
         return "/user/admin";

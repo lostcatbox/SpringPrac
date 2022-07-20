@@ -9,6 +9,7 @@ import hello.postpractice.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -22,22 +23,23 @@ public class PostService {
     private final PostRepository postRepository;
 
     private final UserRepository userRepository;
-    public Long savePost(String email, PostDto postDto){
-        User user = userRepository.findByEmail(email).get();
+    public PostDto savePost(String email, PostDto postDto){
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저없음"));
         postDto.setUser(user);
 
         //postDto에 User까지 반영후, 그다음에 Entity로 전환 후 저장
         Post post = postDto.toEntity();
         postRepository.save(post);
 
-        return post.getId();
+        return postDto;
     }
-    public Long editPost(Long id, PostDto postDto) {
+    public PostDto editPost(Long id, PostDto postDto) {
         //회원을 확인하기위해 다시 디비조회?
         Post post = postRepository.findById(id).orElseThrow(()->
                 new IllegalArgumentException("id로 해당 포스트 없음"));
         postDto.setUser(post.getUser());
-        return postRepository.save(postDto.toEntity()).getId();
+        postRepository.save(postDto.toEntity());
+        return postDto;
     }
     public void deletePost(PostDto postDto) {
         postRepository.delete(postDto.toEntity());

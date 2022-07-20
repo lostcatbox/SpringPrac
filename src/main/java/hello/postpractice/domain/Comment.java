@@ -32,7 +32,7 @@ public class Comment {
     @LastModifiedDate
     private String modifiedDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private Post post;
 
