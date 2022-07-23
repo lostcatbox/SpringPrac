@@ -4,22 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
-public class UserDto {
+public class UserResponseDto {
+    private Long id;
     private String email;
+    private String username;
+
     private String nickname;
-    private String password;
 
-    private String role;
-
-    public User toEntity(){
-        User user = User.builder()
-                .email(email)
-                .nickname(nickname)
-                .role(role)
-                .password(password)
-                .build();
-        return user;
+    public UserResponseDto(User user){
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.username = user.getUsername();
+        this.nickname = user.getNickname();
 
     }
 }
