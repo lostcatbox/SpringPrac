@@ -32,7 +32,7 @@ public class PostController {
 
     @GetMapping("/{id}")
     public SingleResult<PostResponseDto> getpost(@PathVariable Long id, Model model, HttpSession session){
-        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+//        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
         PostResponseDto postResponseDto = postService.getResponseDtoPost(id);
         return responseService.getSingleResult(postResponseDto);
 //
@@ -48,8 +48,8 @@ public class PostController {
     }
     @PostMapping
     public SingleResult<PostDto> addpost(HttpSession session, @RequestBody PostDto postDto){
-        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        return responseService.getSingleResult(postService.savePost(user.getEmail(), postDto));
+//        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+        return responseService.getSingleResult(postService.savePost("admin", postDto));
     }
     @PutMapping("/{id}")
     public SingleResult<PostDto> edit(@PathVariable Long id, @RequestBody PostDto postDto){

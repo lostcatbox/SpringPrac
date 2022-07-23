@@ -1,4 +1,7 @@
 package hello.postpractice.advice.exception;
 
-public class UserNotFoundException {
+public class UserNotFoundCException extends RuntimeException {
+        public UserNotFoundCException() {
+                super();
+        }
 }

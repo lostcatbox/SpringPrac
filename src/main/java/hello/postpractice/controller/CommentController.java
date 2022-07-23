@@ -1,10 +1,6 @@
 package hello.postpractice.controller;
 
 import hello.postpractice.domain.CommentDto;
-import hello.postpractice.domain.PostResponseDto;
-import hello.postpractice.domain.User;
-import hello.postpractice.domain.UserSessionDto;
-import hello.postpractice.repository.PostRepository;
 import hello.postpractice.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -33,8 +28,7 @@ public class CommentController {
 
     @PostMapping
     public HttpStatus commentSave(@PathVariable Long postId, CommentDto commentDto, HttpSession session){
-        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        String email = user.getEmail();
+        String email = "admin";
         commentService.commentSave(email, postId, commentDto);
         return HttpStatus.OK;
     }
