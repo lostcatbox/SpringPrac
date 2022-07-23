@@ -38,3 +38,5 @@ out/
 
 ## jwt-secretkey
 /src/main/resources/application-jwt.yml
+
+# 풀리퀘스트 테스트
