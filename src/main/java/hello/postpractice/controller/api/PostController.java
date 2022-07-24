@@ -19,20 +19,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("basic/post")
+@CrossOrigin(origins = "http://localhost:8081")
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
     private final ResponseService responseService;
 
     @GetMapping
-    public ListResult<PostDto> getposts(Model model){
+    public ListResult<PostDto> postList(){
         List<PostDto> postDtoList = postService.getPostList();
         return responseService.getListResult(postDtoList);
     }
 
     @GetMapping("/{id}")
-    public SingleResult<PostResponseDto> getpost(@PathVariable Long id, Model model, HttpSession session){
-//        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+    public SingleResult<PostResponseDto> getpost(@PathVariable Long id){
         PostResponseDto postResponseDto = postService.getResponseDtoPost(id);
         return responseService.getSingleResult(postResponseDto);
 //
@@ -47,13 +47,13 @@ public class PostController {
 //        }
     }
     @PostMapping
-    public SingleResult<PostDto> addpost(HttpSession session, @RequestBody PostDto postDto){
-//        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
+    public SingleResult<PostDto> create(@RequestBody PostDto postDto){
+        // jwt에서 작성자 넘겨줘야하나?
         return responseService.getSingleResult(postService.savePost("admin", postDto));
     }
-    @PutMapping("/{id}")
-    public SingleResult<PostDto> edit(@PathVariable Long id, @RequestBody PostDto postDto){
-        return responseService.getSingleResult(postService.editPost(id, postDto));
+    @PutMapping()
+    public SingleResult<PostDto> update(@RequestBody PostDto postDto){
+        return responseService.getSingleResult(postService.editPost(postDto));
     }
     @DeleteMapping("/{id}")
     public CommonResult delete(@PathVariable Long id){

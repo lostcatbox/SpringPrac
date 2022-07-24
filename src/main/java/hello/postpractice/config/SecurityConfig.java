@@ -26,6 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
         return super.authenticationManagerBean();
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -33,9 +34,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .authorizeRequests().antMatchers("/").permitAll()
+                .and()
+
                 .authorizeRequests()
-                .antMatchers("/*/login", "/*/signup").permitAll()
-                .anyRequest().hasRole("USER")
+//                .antMatchers("/*/login", "/*/signup").permitAll()
+//                .anyRequest().hasRole("USER")
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
     }
@@ -45,4 +49,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
         web.ignoring().antMatchers("/v2/api-docs", "/swagger-resources/**",
                 "/swagger-ui.html", "/webjars/**", "/swagger/**");
     }
+
 }

@@ -24,6 +24,7 @@ public class PostService {
 
     private final UserRepository userRepository;
     public PostDto savePost(String email, PostDto postDto){
+        // 유저가 필요함. 정보를 jwt에서 가져와야할듯
         User user = userRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("유저없음"));
         postDto.setUser(user);
 
@@ -31,15 +32,14 @@ public class PostService {
         Post post = postDto.toEntity();
         postRepository.save(post);
 
-        return postDto;
+        return new PostDto(post);
     }
-    public PostDto editPost(Long id, PostDto postDto) {
-        //회원을 확인하기위해 다시 디비조회?
-        Post post = postRepository.findById(id).orElseThrow(()->
-                new IllegalArgumentException("id로 해당 포스트 없음"));
-        postDto.setUser(post.getUser());
-        postRepository.save(postDto.toEntity());
-        return postDto;
+    public PostDto editPost(PostDto postDto) {
+        //해당 postDto에서 id를 찾아 DB조회후 엔티티에 update함수를 활용해 처리
+        Post post = postRepository.findById(postDto.getId()).orElseThrow(() -> new IllegalArgumentException("게시글을 찾을수없습니다"));
+        post.update(postDto.getPostName(), postDto.getContent());
+        postRepository.save(post);
+        return new PostDto(post);
     }
     public void deletePost(PostDto postDto) {
         postRepository.delete(postDto.toEntity());
