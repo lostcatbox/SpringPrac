@@ -4,6 +4,7 @@ import hello.postpractice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,14 +33,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
         http
                 .httpBasic().disable()
                 .csrf().disable()
+
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests().antMatchers("/").permitAll()
                 .and()
 
                 .authorizeRequests()
-//                .antMatchers("/*/login", "/*/signup").permitAll()
+                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()//allow CORS option calls
+                .antMatchers("/*/login", "/*/signup").permitAll()
 //                .anyRequest().hasRole("USER")
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
     }

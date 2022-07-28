@@ -7,6 +7,9 @@ import hello.postpractice.model.response.SingleResult;
 import hello.postpractice.service.PostService;
 import hello.postpractice.service.ResponseService;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,8 +52,10 @@ public class PostController {
     }
     @PostMapping
     public SingleResult<PostDto> create(@RequestBody PostDto postDto){
-        // jwt에서 작성자 넘겨줘야하나?
-        return responseService.getSingleResult(postService.savePost("admin", postDto));
+        // jwt에서 작성자 넘겨주는 법 맞음?
+        System.out.println("postDto = " + postDto);
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        return responseService.getSingleResult(postService.savePost(name, postDto));
     }
     @PutMapping()
     public SingleResult<PostDto> update(@RequestBody PostDto postDto){
