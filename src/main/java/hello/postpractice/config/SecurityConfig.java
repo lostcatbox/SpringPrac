@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
 
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()//allow CORS option calls
-                .antMatchers("/*/login", "/*/signup").permitAll()
+                .antMatchers("/login", "/signup").permitAll()
 //                .anyRequest().hasRole("USER")
                 .anyRequest().authenticated()
                 .and()

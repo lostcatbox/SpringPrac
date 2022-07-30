@@ -13,10 +13,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Api(tags = "1. SignUp / LogIn")
 @RequiredArgsConstructor
-@RestController
-@RequestMapping("/v1")
+@RestController("/")
 public class SignController {
 
     private final UserService userService;
@@ -25,11 +26,12 @@ public class SignController {
     private final PasswordEncoder passwordEncoder;
 
     @ApiOperation(value = "로그인", notes = "이메일로 로그인을 합니다.")
-    @GetMapping("/login")
+    @PostMapping("/login")
     public SingleResult<String> login(
-            @ApiParam(value = "로그인 아이디 : 이메일", required = true) @RequestParam String email,
-            @ApiParam(value = "로그인 비밀번호", required = true) @RequestParam String password) {
-        UserLoginResponseDto userLoginDto = userService.login(email, password);
+            @ApiParam(value = "로그인 아이디 : 이메일", required = true) @RequestBody Map<String, String> loginMap) {
+        String username = loginMap.get("username");
+        String password = loginMap.get("password");
+        UserLoginResponseDto userLoginDto = userService.login(username, password);
 
         String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto.getRoles());
         return responseService.getSingleResult(token);
