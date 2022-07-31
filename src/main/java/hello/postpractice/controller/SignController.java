@@ -13,11 +13,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "1. SignUp / LogIn")
 @RequiredArgsConstructor
 @RestController("/")
+@CrossOrigin(origins="*", allowedHeaders = "*")
 public class SignController {
 
     private final UserService userService;
@@ -34,6 +37,7 @@ public class SignController {
         UserLoginResponseDto userLoginDto = userService.login(username, password);
 
         String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto.getRoles());
+
         return responseService.getSingleResult(token);
     }
 

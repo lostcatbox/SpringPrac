@@ -23,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("basic/post")
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins="*", allowedHeaders = "*")
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
