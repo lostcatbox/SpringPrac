@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @RequiredArgsConstructor
 @EnableWebSecurity // 1
@@ -32,16 +33,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable()
-                .csrf().disable()
+                .csrf()
+//                .and()
+                .disable()
+
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                    .and()
                 .authorizeRequests().antMatchers("/").permitAll()
-                .and()
+                    .and()
 
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()//allow CORS option calls
-                .antMatchers("/*/login", "/*/signup").permitAll()
+                .antMatchers("/login", "/signup").permitAll()
 //                .anyRequest().hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
