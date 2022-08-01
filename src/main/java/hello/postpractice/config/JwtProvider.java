@@ -1,5 +1,7 @@
 package hello.postpractice.config;
 
+import hello.postpractice.domain.UserLoginResponseDto;
+import hello.postpractice.domain.UserResponseDto;
 import hello.postpractice.service.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -35,11 +37,13 @@ public class JwtProvider {
     }
 
     // Jwt 생성
-    public String createToken(String userPk, List<String> roles) {
+    public String createToken(String userPk, UserLoginResponseDto userLoginResponseDto) {
 
         // user 구분을 위해 Claims에 User Pk값 넣어줌
         Claims claims = Jwts.claims().setSubject(userPk);  //클래임에 userPK 추가
-        claims.put("roles", roles); //권한 추가
+        claims.put("roles", userLoginResponseDto.getRoles()); //권한 추가
+        claims.put("email", userLoginResponseDto.getEmail());
+        claims.put("username", userLoginResponseDto.getEmail());
         Date now = new Date(); // 생성날짜, 만료날짜를 위한 Date
 
         return Jwts.builder()

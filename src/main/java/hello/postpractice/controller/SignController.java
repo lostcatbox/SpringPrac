@@ -36,7 +36,7 @@ public class SignController {
         String password = loginMap.get("password");
         UserLoginResponseDto userLoginDto = userService.login(username, password);
 
-        String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto.getRoles());
+        String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto);
 
         return responseService.getSingleResult(token);
     }

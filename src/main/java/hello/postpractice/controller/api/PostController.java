@@ -7,7 +7,7 @@ import hello.postpractice.model.response.SingleResult;
 import hello.postpractice.service.PostService;
 import hello.postpractice.service.ResponseService;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -52,10 +52,9 @@ public class PostController {
     }
     @PostMapping
     public SingleResult<PostDto> create(@RequestBody PostDto postDto){
-        // jwt에서 작성자 넘겨주는 법 맞음?
-        System.out.println("postDto = " + postDto);
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        return responseService.getSingleResult(postService.savePost(name, postDto));
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((User) principal).getEmail();
+        return responseService.getSingleResult(postService.savePost(email, postDto));
     }
     @PutMapping()
     public SingleResult<PostDto> update(@RequestBody PostDto postDto){
