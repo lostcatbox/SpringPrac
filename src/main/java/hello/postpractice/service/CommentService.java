@@ -38,11 +38,11 @@ public class CommentService {
 
     /* CREATE */
     @Transactional
-    public Long commentSave(String email, Long id, CommentDto commentDto) {
+    public CommentDto commentSave(String email, Long postId, CommentDto commentDto) {
         User user = userRepository.findByEmail(email).orElseThrow(()->
                 new IllegalArgumentException("해당 id로 유저 없음"));
-        Post post = postRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + id));
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + postId));
 
         commentDto.setUser(user);
         commentDto.setPost(post);
@@ -50,7 +50,7 @@ public class CommentService {
         Comment comment = commentDto.toEntity();
         commentRepository.save(comment);
 
-        return commentDto.getId();
+        return commentDto;
     }
     /* Update */
     @Transactional
@@ -58,6 +58,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new IllegalArgumentException("해당댓글이 존재하지 않습니다"));
         comment.update(commentDto.getComment());
+
     }
     /* Delete */
     @Transactional
