@@ -44,10 +44,6 @@ public class SignController {
     @ApiOperation(value = "회원가입", notes = "회원가입을 합니다.")
     @PostMapping("/signup")
     public SingleResult<Long> signup( @RequestBody Map<String, String> signupMap){
-//            @ApiParam(value = "회원 가입 아이디 : 이메일", required = true) @RequestParam String email,
-//            @ApiParam(value = "회원 가입 비밀번호", required = true) @RequestParam String password,
-//            @ApiParam(value = "회원 가입 이름", required = true) @RequestParam String username,
-//            @ApiParam(value = "회원 가입 닉네임", required = true) @RequestParam String nickname) {
         String email = signupMap.get("email");
         String password = signupMap.get("password");
         String nickname = signupMap.get("nickname");
