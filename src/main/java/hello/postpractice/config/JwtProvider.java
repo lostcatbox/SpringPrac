@@ -46,12 +46,13 @@ public class JwtProvider {
         claims.put("username", userLoginResponseDto.getEmail());
         Date now = new Date(); // 생성날짜, 만료날짜를 위한 Date
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + tokenValidMillisecond))
                 .signWith(SignatureAlgorithm.HS256, secretKey) //secretKey, 암호화알고리즘
                 .compact();
+        return "Bearer " + token;
     }
 
 
@@ -68,7 +69,7 @@ public class JwtProvider {
 
     // HTTP Request 의 Header 에서 Token Parsing -> "X-AUTH-TOKEN: jwt"
     public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
+        return request.getHeader("Authorization");
     }
 
     // jwt 의 유효성 및 만료일자 확인
@@ -77,6 +78,7 @@ public class JwtProvider {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date()); // 만료날짜가 현재보다 이전이면 false
         } catch (Exception e) {
+            System.out.println("token 유효하지않음");
             return false;
         }
     }

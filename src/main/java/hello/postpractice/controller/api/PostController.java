@@ -39,16 +39,6 @@ public class PostController {
     public SingleResult<PostResponseDto> getpost(@PathVariable Long id){
         PostResponseDto postResponseDto = postService.getResponseDtoPost(id);
         return responseService.getSingleResult(postResponseDto);
-//
-//        /*유저관련*/
-//        if (!ObjectUtils.isEmpty(user)){
-//            model.addAttribute("user", user.getEmail());
-//
-//            //게시판 작성자 본인인지 확인
-//            if (postResponseDto.getUser().getEmail().equals(user.getEmail())) {
-//                model.addAttribute("writer", true);
-//            }
-//        }
     }
     @PostMapping
     public SingleResult<PostDto> create(@RequestBody PostDto postDto){

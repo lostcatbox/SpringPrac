@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,15 +31,17 @@ public class SignController {
 
     @ApiOperation(value = "로그인", notes = "이메일로 로그인을 합니다.")
     @PostMapping("/login")
-    public SingleResult<String> login(
+    public SingleResult<Map> login(
             @ApiParam(value = "로그인 아이디 : 이메일", required = true) @RequestBody Map<String, String> loginMap) {
         String email = loginMap.get("username");
         String password = loginMap.get("password");
         UserLoginResponseDto userLoginDto = userService.login(email, password);
 
         String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto);
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("Authorization", token);
 
-        return responseService.getSingleResult(token);
+        return responseService.getSingleResult(tokenMap);
     }
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 합니다.")
