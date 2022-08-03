@@ -23,8 +23,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request,
                          ServletResponse response,
                          FilterChain filterChain) throws IOException, ServletException {
-        String token = jwtProvider.resolveToken((HttpServletRequest) request); //http에서 Token값 얻어옴(JWT토큰)
-        if (token != null && jwtProvider.validationToken(token)) {  // validationToken()으로 secret key로 시그니처 일치확인 및 만료일자 지낫는지확인함
+        String requestTokenHeader = jwtProvider.resolveToken((HttpServletRequest) request); //http에서 Bearer+Token값 얻어옴(JWT토큰)
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {  // Bearer로 시작하는지확인
+            String token = requestTokenHeader.substring(7);  //token값 추출
+            jwtProvider.validationToken(token);// validationToken()으로 secret key로 시그니처 일치확인 및 만료일자 지낫는지확인함
             Authentication authentication = jwtProvider.getAuthentication(token); //token에서 get(userpk)하여 loadbyusername()실행하여, 해당 유저의 authentication 생성및반환
             SecurityContextHolder.getContext().setAuthentication(authentication); // authentication
         }
