@@ -25,6 +25,7 @@ public class MyAdvice {
     @ExceptionHandler(UserNotFoundCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult userNotFoundException(HttpServletRequest request, UserNotFoundCException e) {
+        System.out.println("UserNotFound");
         return responseService.getFailResult();
     }
 
@@ -34,18 +35,21 @@ public class MyAdvice {
     @ExceptionHandler(EmailNotFailedCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult emailLoginFailedCException(HttpServletRequest request, EmailNotFailedCException e) {
+        System.out.println("EmailLoginFailed");
         return responseService.getFailResult();
     }
 
     @ExceptionHandler(PasswordFailCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult passwordFailException(HttpServletRequest request, PasswordFailCException e) {
+        System.out.println("PasswordFail");
         return responseService.getFailResult();
     }
 
     @ExceptionHandler(EmailExsistFailedCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult emailExsistFailedCException(HttpServletRequest request, EmailExsistFailedCException e) {
+        System.out.println("EmailAlreadyFailed");
         return responseService.getFailResult();
     }
 }
