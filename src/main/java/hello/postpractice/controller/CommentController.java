@@ -3,6 +3,8 @@ package hello.postpractice.controller;
 import hello.postpractice.domain.CommentDto;
 import hello.postpractice.domain.PostDto;
 import hello.postpractice.domain.User;
+import hello.postpractice.model.response.CommonResult;
+import hello.postpractice.model.response.ListResult;
 import hello.postpractice.model.response.SingleResult;
 import hello.postpractice.service.CommentService;
 import hello.postpractice.service.ResponseService;
@@ -25,13 +27,14 @@ public class CommentController {
     private final ResponseService responseService;
 
     @GetMapping
-    public List<CommentDto> getcomments(@PathVariable Long postId){
+    public ListResult<CommentDto> getcomments(@PathVariable Long postId){
         List<CommentDto> commentList = commentService.getList(postId);
-        return commentList;
+        return responseService.getListResult(commentList);
     }
     @GetMapping("/{commentId}")
-    public CommentDto getcomment(@PathVariable Long postId, @PathVariable Long commentId){
-        return commentService.get(commentId);
+    public SingleResult<CommentDto> getcomment(@PathVariable Long postId, @PathVariable Long commentId){
+        CommentDto commentDto = commentService.get(commentId);
+        return responseService.getSingleResult(commentDto);
     }
 
     @PostMapping
@@ -56,8 +59,8 @@ public class CommentController {
     댓글 delete
      */
     @DeleteMapping("/{commentId}")
-    public HttpStatus delete(@PathVariable Long postId,@PathVariable Long commentId){
+    public CommonResult delete(@PathVariable Long postId, @PathVariable Long commentId){
         commentService.delete(commentId);
-        return HttpStatus.OK;
+        return responseService.getSuccessResult();
     }
 }
