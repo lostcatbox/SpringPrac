@@ -33,7 +33,7 @@ public class SignController {
     @PostMapping("/login")
     public SingleResult<Map> login(
             @ApiParam(value = "로그인 아이디 : 이메일", required = true) @RequestBody Map<String, String> loginMap) {
-        String email = loginMap.get("username");
+        String email = loginMap.get("username"); //null? 오류처리?
         String password = loginMap.get("password");
         UserLoginResponseDto userLoginDto = userService.login(email, password);
 
