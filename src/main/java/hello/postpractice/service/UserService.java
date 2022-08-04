@@ -1,18 +1,16 @@
 package hello.postpractice.service;
 
+import hello.postpractice.advice.exception.EmailExsistFailedCException;
+import hello.postpractice.advice.exception.EmailNotFailedCException;
+import hello.postpractice.advice.exception.PasswordFailCException;
 import hello.postpractice.advice.exception.UserNotFoundCException;
 import hello.postpractice.domain.*;
 import hello.postpractice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,14 +29,14 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(UserNotFoundCException::new);
         return new UserResponseDto(user);
     }
 
     @Transactional(readOnly = true)
     public UserResponseDto findByEmail(String email) {
         User user = userRepository.findByEmail(email).get();
-        if (user == null) throw new RuntimeException();
+        if (user == null) throw new UserNotFoundCException();
         else return new UserResponseDto(user);
     }
 
@@ -65,9 +63,9 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserLoginResponseDto login(String email, String password) {
-        User user = userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        User user = userRepository.findByEmail(email).orElseThrow(EmailNotFailedCException::new);
         if (!passwordEncoder.matches(password, user.getPassword()))  //지금 받아온 password와 bean에 등록된 passwordencoder를 통해 DB에 저장된 암호화된 password일치하는지확인
-            throw new RuntimeException();
+            throw new PasswordFailCException();
         return new UserLoginResponseDto(user);
     }
 
@@ -75,6 +73,6 @@ public class UserService {
     public Long signup(UserSignupRequestDto userSignupDto) {
         if (userRepository.findByEmail(userSignupDto.toEntity().getEmail()).orElse(null) == null)
             return userRepository.save(userSignupDto.toEntity()).getId();
-        else throw new RuntimeException();
+        else throw new EmailExsistFailedCException();
     }
 }
