@@ -40,15 +40,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
-                .authorizeRequests().antMatchers("/").permitAll()
-                    .and()
-
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()//allow CORS option calls
+                .antMatchers("/","/test/**").permitAll() //test진행하기위해 test/이후 경로는 인증필요없음
                 .antMatchers("/login", "/signup").permitAll()
 //                .anyRequest().hasRole("USER")
                 .anyRequest().authenticated()
-                .and()
+                    .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
     }
 
