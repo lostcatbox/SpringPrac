@@ -1,5 +1,9 @@
 package hello.postpractice.service;
 
+import hello.postpractice.advice.exception.CommentNotFoundCException;
+import hello.postpractice.advice.exception.PostNotFoundCException;
+import hello.postpractice.advice.exception.UnMatchedUserCException;
+import hello.postpractice.advice.exception.UserNotFoundCException;
 import hello.postpractice.domain.Comment;
 import hello.postpractice.domain.CommentDto;
 import hello.postpractice.domain.Post;
@@ -11,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class CommentService {
@@ -18,12 +25,27 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
+    @Transactional
+    public List<CommentDto> getList(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new PostNotFoundCException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + postId));
+        List<CommentDto> commentList = post.getComments().stream().map(CommentDto::new).collect(Collectors.toList());
+        return commentList;
+    }
+    @Transactional
+    public CommentDto get(Long commentId){
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundCException("해당 id댓글없음"));
+        CommentDto commentDto = new CommentDto(comment);
+        return commentDto;
+    }
+
     /* CREATE */
     @Transactional
-    public Long commentSave(String email, Long id, CommentDto commentDto) {
-        User user = userRepository.findByEmail(email).get();
-        Post post = postRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + id));
+    public CommentDto commentSave(String email, Long postId, CommentDto commentDto) {
+        User user = userRepository.findByEmail(email).orElseThrow(()->
+                new UserNotFoundCException());
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new PostNotFoundCException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + postId));
 
         commentDto.setUser(user);
         commentDto.setPost(post);
@@ -31,20 +53,27 @@ public class CommentService {
         Comment comment = commentDto.toEntity();
         commentRepository.save(comment);
 
-        return commentDto.getId();
+        return commentDto;
     }
     /* Update */
     @Transactional
-    public void update(Long commentId, CommentDto commentDto){
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
-                new IllegalArgumentException("해당댓글이 존재하지 않습니다"));
+    public void update(String email, CommentDto commentDto){
+        Comment comment = commentRepository.findById(commentDto.getId()).orElseThrow(() ->
+                new CommentNotFoundCException("해당댓글이 존재하지 않습니다"));
+        if (!(comment.getUser().getEmail() == email)) { //같은 유저 인지 체크
+            throw new UnMatchedUserCException("권한 User가 아닙니다");
+        }
         comment.update(commentDto.getComment());
+
     }
     /* Delete */
     @Transactional
-    public void delete(Long commentId){
+    public void delete(String email,Long commentId){
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
-                new IllegalArgumentException("해당 댓글이 존재하지 않습니다"));
+                new CommentNotFoundCException("해당 댓글이 존재하지 않습니다"));
+        if (!(comment.getUser().getEmail() == email)) { //같은 유저 인지 체크
+            throw new UnMatchedUserCException("권한 User가 아닙니다");
+        }
         commentRepository.delete(comment);
     }
 }

@@ -1,63 +1,93 @@
 package hello.postpractice.controller;
 
-import hello.postpractice.domain.UserDto;
-import hello.postpractice.domain.UserSessionDto;
+import hello.postpractice.domain.User;
+import hello.postpractice.domain.UserRequestDto;
+import hello.postpractice.domain.UserResponseDto;
+import hello.postpractice.model.response.CommonResult;
+import hello.postpractice.model.response.ListResult;
+import hello.postpractice.model.response.SingleResult;
+import hello.postpractice.repository.UserRepository;
+import hello.postpractice.service.ResponseService;
 import hello.postpractice.service.UserService;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import org.springframework.web.bind.annotation.*;
+@Api(tags = {"2. User"})
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class UserController {
 
     private final UserService userService;
+    private final ResponseService responseService;
 
-    private final HttpSession session;
-
-    @GetMapping("/")
-    public String servetologin() {
-        return "redirect:/login";
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "X-AUTH-TOKEN",
+                    value = "로그인 성공 후 AccessToken",
+                    required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "회원 단건 검색", notes = "userId로 회원을 조회합니다.")
+    @GetMapping("/user/id/{userId}")
+    public SingleResult<UserResponseDto> findUserById
+            (@ApiParam(value = "회원 ID", required = true) @PathVariable Long userId,
+             @ApiParam(value = "언어", defaultValue = "ko") @RequestParam String lang) {
+        return responseService.getSingleResult(userService.findById(userId));
     }
 
-    @GetMapping("/join")
-    public String join() {
-        return "/user/signup";
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "X-AUTH-TOKEN",
+                    value = "로그인 성공 후 AccessToken",
+                    required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "회원 단건 검색 (이메일)", notes = "이메일로 회원을 조회합니다.")
+    @GetMapping("/user/email/{email}")
+    public SingleResult<UserResponseDto> findUserByEmail
+            (@ApiParam(value = "회원 이메일", required = true) @PathVariable String email,
+             @ApiParam(value = "언어", defaultValue = "ko") @RequestParam String lang) {
+        return responseService.getSingleResult(userService.findByEmail(email));
     }
 
-    @PostMapping("/joinProc")
-    public String join(UserDto userDto) { // 회원 추가
-        userService.join(userDto);
-        return "redirect:/login";
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "X-AUTH-TOKEN",
+                    value = "로그인 성공 후 AccessToken",
+                    required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "회원 목록 조회", notes = "모든 회원을 조회합니다.")
+    @GetMapping("/users")
+    public ListResult<UserResponseDto> findAllUser() {
+        return responseService.getListResult(userService.findAllUser());
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "/user/login";
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "X-AUTH-TOKEN",
+                    value = "로그인 성공 후 AccessToken",
+                    required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "회원 수정", notes = "회원 정보를 수정합니다.")
+    @PutMapping("/user")
+    public SingleResult<Long> update (
+            @ApiParam(value = "회원 ID", required = true) @RequestParam Long userId,
+            @ApiParam(value = "회원 이름", required = true) @RequestParam String nickname) {
+        UserRequestDto userRequestDto = UserRequestDto.builder()
+                .nickname(nickname)
+                .build();
+        return responseService.getSingleResult(userService.update(userId, userRequestDto));
     }
 
-    @GetMapping(value = "/logout")
-    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:/login";
-    }
-
-    @GetMapping("/main")
-    public String mainPage(Model model){
-        UserSessionDto user = (UserSessionDto) session.getAttribute("user");
-        model.addAttribute("user", user);
-        return "/user/main";
-    }
-    @GetMapping("/admin")
-    public String adminPage(){
-        return "/user/admin";
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "X-AUTH-TOKEN",
+                    value = "로그인 성공 후 AccessToken",
+                    required = true, dataType = "String", paramType = "header")
+    })
+    @ApiOperation(value = "회원 삭제", notes = "회원을 삭제합니다.")
+    @DeleteMapping("/user/{userId}")
+    public CommonResult delete(
+            @ApiParam(value = "회원 아이디", required = true) @PathVariable Long userId) {
+        userService.delete(userId);
+        return responseService.getSuccessResult();
     }
 }

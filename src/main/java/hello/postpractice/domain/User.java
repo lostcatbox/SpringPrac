@@ -1,54 +1,57 @@
 package hello.postpractice.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
-public class User implements UserDetails {
+@Setter
+@Builder
+public class User extends BaseTimeEntity implements UserDetails {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name="username")
+    private String username;
+
+    @Column(name="nickname",nullable = false)
     private String nickname;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password")
     private String password;
 
-    @Column(name = "role")
-    private String role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
 
-    @Builder
-    public User(String email, String nickname, String password, String role) {
-        this.email = email;
+    public void updateNickName(String nickname) {
         this.nickname = nickname;
-        this.password = password;
-        this.role = role;
     }
+
 
     // 사용자의 권한을 콜렉션 형태로 반환
     // 단, 클래스 자료형은 GrantedAuthority를 구현해야함
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> roles = new HashSet<>();
-        for (String sprite_role : role.split(",")) {
-            roles.add(new SimpleGrantedAuthority(sprite_role));
-        }
-        return roles;
+        return this.roles
+                .stream().map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     // 사용자의 id를 반환 (unique한 값)

@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -37,11 +39,12 @@ public class Post {
     private LocalDateTime modifiedDate;
 
 
-    @ManyToOne(fetch =FetchType.LAZY)
+    @ManyToOne(fetch =FetchType.EAGER)
     @JoinColumn(name="user_id")
     private User user;
 
-    @OneToMany(mappedBy="post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy="post", fetch = FetchType.LAZY, cascade =CascadeType.REMOVE, orphanRemoval=true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @OrderBy("id asc") //댓글 정렬
     private List<Comment> comments;
 
