@@ -64,3 +64,11 @@ public class PostController {
         return email;
     }
 }
+
+// post C -> S
+// 인증 검사를 하는 플로우는 post랑은 상관없음.
+// (Post C - > AuthService -> Post C ->) Post S
+// 관심사 분리. 책임 분리
+// post 엔티티에 대해서는 post C가 검증해야하지만, user에 대한 검증이므로 userAuthService를 따로만들엉야함
+// 성공시 HTTP status로 충분하다 성공하면 200
+// 실패시에만 message를 주는 것만 고려하면됨

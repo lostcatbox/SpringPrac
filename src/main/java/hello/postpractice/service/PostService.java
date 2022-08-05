@@ -36,7 +36,7 @@ public class PostService {
     public PostDto editPost(String email, PostDto postDto) {
         //해당 postDto에서 id를 찾아 DB조회후 엔티티에 update함수를 활용해 처리
         Post post = postRepository.findById(postDto.getId()).orElseThrow(() -> new PostNotFoundCException("게시글을 찾을수없습니다"));
-        if (!(post.getUser().getEmail() == email)) { //같은 유저 인지 체크
+        if (!(post.getUser().getEmail().equals(email))) { //같은 유저 인지 체크
             throw new UnMatchedUserCException("권한 USER 아닙니다");
         }
         post.update(postDto.getPostName(), postDto.getContent());
@@ -45,7 +45,7 @@ public class PostService {
     }
     public void deletePost(String email,PostDto postDto) {
         Post post = postRepository.findById(postDto.getId()).orElseThrow(() -> new PostNotFoundCException("게시글을 찾을수없습니다"));
-        if (!(post.getUser().getEmail() == email)) { //같은 유저 인지 체크
+        if (!(post.getUser().getEmail().equals(email))) { //같은 유저 인지 체크
             throw new UnMatchedUserCException("권한 USER 아닙니다");
         }
         postRepository.delete(post);
