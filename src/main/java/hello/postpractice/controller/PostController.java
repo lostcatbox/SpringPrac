@@ -1,4 +1,4 @@
-package hello.postpractice.controller.api;
+package hello.postpractice.controller;
 
 import hello.postpractice.domain.*;
 import hello.postpractice.model.response.CommonResult;
@@ -42,18 +42,25 @@ public class PostController {
     }
     @PostMapping
     public SingleResult<PostDto> create(@RequestBody PostDto postDto){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = ((User) principal).getEmail();
+        String email = getCurrentUserEmail();
         return responseService.getSingleResult(postService.savePost(email, postDto));
     }
     @PutMapping()
     public SingleResult<PostDto> update(@RequestBody PostDto postDto){
-        return responseService.getSingleResult(postService.editPost(postDto));
+        String email = getCurrentUserEmail();
+        return responseService.getSingleResult(postService.editPost(email,postDto));
     }
     @DeleteMapping("/{id}")
     public CommonResult delete(@PathVariable Long id){
         PostDto postDto = postService.getPost(id);
-        postService.deletePost(postDto);
+        String email = getCurrentUserEmail();
+        postService.deletePost(email, postDto);
         return responseService.getSuccessResult();
+    }
+
+    private String getCurrentUserEmail() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((User) principal).getEmail();
+        return email;
     }
 }

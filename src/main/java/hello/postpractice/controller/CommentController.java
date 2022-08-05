@@ -52,7 +52,8 @@ public class CommentController {
     @PutMapping
     public SingleResult<CommentDto> update(@RequestBody CommentDto dto){
         Long commentId = dto.getId();
-        commentService.update(commentId, dto);
+        String email = getCurrentUserEmail();
+        commentService.update(email, dto);
         return responseService.getSingleResult(dto);
     }
     /*
@@ -60,7 +61,14 @@ public class CommentController {
      */
     @DeleteMapping("/{commentId}")
     public CommonResult delete(@PathVariable Long postId, @PathVariable Long commentId){
-        commentService.delete(commentId);
+        String email = getCurrentUserEmail();
+        commentService.delete(email, commentId);
         return responseService.getSuccessResult();
+    }
+
+    private String getCurrentUserEmail() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = ((User) principal).getEmail();
+        return email;
     }
 }
