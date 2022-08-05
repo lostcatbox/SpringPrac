@@ -60,7 +60,7 @@ public class CommentService {
     public void update(String email, CommentDto commentDto){
         Comment comment = commentRepository.findById(commentDto.getId()).orElseThrow(() ->
                 new CommentNotFoundCException("해당댓글이 존재하지 않습니다"));
-        if (!(comment.getUser().getEmail() == email)) { //같은 유저 인지 체크
+        if (!(comment.getUser().getEmail().equals(email))) { //같은 유저 인지 체크
             throw new UnMatchedUserCException("권한 User가 아닙니다");
         }
         comment.update(commentDto.getComment());
@@ -71,7 +71,9 @@ public class CommentService {
     public void delete(String email,Long commentId){
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new CommentNotFoundCException("해당 댓글이 존재하지 않습니다"));
-        if (!(comment.getUser().getEmail() == email)) { //같은 유저 인지 체크
+        System.out.println(comment.getUser().getEmail());
+        System.out.println(email);
+        if (!(comment.getUser().getEmail().equals(email) )) { //같은 유저 인지 체크
             throw new UnMatchedUserCException("권한 User가 아닙니다");
         }
         commentRepository.delete(comment);
