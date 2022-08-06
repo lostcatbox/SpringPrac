@@ -3,6 +3,7 @@ package hello.postpractice.advice;
 import hello.postpractice.advice.exception.*;
 import hello.postpractice.model.response.CommonResult;
 import hello.postpractice.service.ResponseService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
+@Slf4j
 public class MyAdvice {
     @Autowired
     ResponseService responseService;
@@ -22,7 +24,7 @@ public class MyAdvice {
     @ExceptionHandler(UserNotFoundCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult userNotFoundException(HttpServletRequest request, UserNotFoundCException e) {
-        System.out.println(e.getMessage());
+        log.info(e.getMessage());
         return responseService.getFailResult();
     }
 
@@ -32,46 +34,46 @@ public class MyAdvice {
     @ExceptionHandler(EmailNotFailedCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult emailLoginFailedCException(HttpServletRequest request, EmailNotFailedCException e) {
-        System.out.println(e.getMessage());
+        log.info(e.getMessage());
         return responseService.getFailResult();
     }
 
     @ExceptionHandler(PasswordFailCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult passwordFailException(HttpServletRequest request, PasswordFailCException e) {
-        System.out.println(e.getMessage());
+        log.info(e.getMessage());
         return responseService.getFailResult();
     }
 
     @ExceptionHandler(EmailExsistFailedCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult emailExsistFailedCException(HttpServletRequest request, EmailExsistFailedCException e) {
-        System.out.println(e.getMessage());
+        log.info(e.getMessage());
         return responseService.getFailResult();
     }
 
     @ExceptionHandler(UnMatchedUserCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult unMathedUserException(HttpServletRequest request, UnMatchedUserCException e) {
-        System.out.println(e.getMessage());
+        log.info(e.getMessage());
         return responseService.getFailResult();
     }
     @ExceptionHandler(PostNotFoundCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult postNotFoundException(HttpServletRequest request, PostNotFoundCException e) {
-        System.out.println(e.getMessage());
+        log.info(e.getMessage());
         return responseService.getFailResult();
     }
     @ExceptionHandler(CommentNotFoundCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult commentNotFoundCException(HttpServletRequest request, CommentNotFoundCException e) {
-        System.out.println(e.getMessage());
+        log.info(e.getMessage());
         return responseService.getFailResult();
     }
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult catchNullPointException(HttpServletRequest request, CommentNotFoundCException e) {
-        System.out.println("catchNullPointException");
+        log.info(e.getMessage());
         return responseService.getFailResult();
     }
 
