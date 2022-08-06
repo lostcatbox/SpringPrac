@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,14 +30,16 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(UserNotFoundCException::new);
+                .orElseThrow(() -> new UserNotFoundCException("해당유저를 찾을수없습니다"));
         return new UserResponseDto(user);
     }
 
     @Transactional(readOnly = true)
     public UserResponseDto findByEmail(String email) {
         User user = userRepository.findByEmail(email).get();
-        if (user == null) throw new UserNotFoundCException();
+        if (ObjectUtils.isEmpty(user)) {
+            throw new UserNotFoundCException("해당유저를 찾을수없습니다.");
+        }
         else return new UserResponseDto(user);
     }
 
@@ -51,7 +54,7 @@ public class UserService {
     @Transactional
     public Long update(Long id, UserRequestDto userRequestDto) {
         User modifiedUser = userRepository
-                .findById(id).orElseThrow(UserNotFoundCException::new);
+                .findById(id).orElseThrow(()-> new UserNotFoundCException("User찾을수없음"));
         modifiedUser.setNickname(userRequestDto.getNickname());
         return id;
     }
@@ -65,14 +68,15 @@ public class UserService {
     public UserLoginResponseDto login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(EmailNotFailedCException::new);
         if (!passwordEncoder.matches(password, user.getPassword()))  //지금 받아온 password와 bean에 등록된 passwordencoder를 통해 DB에 저장된 암호화된 password일치하는지확인
-            throw new PasswordFailCException();
+            throw new PasswordFailCException("비밀번호 오류"+email);
         return new UserLoginResponseDto(user);
     }
 
     @Transactional
     public Long signup(UserSignupRequestDto userSignupDto) {
-        if (userRepository.findByEmail(userSignupDto.toEntity().getEmail()).orElse(null) == null)
-            return userRepository.save(userSignupDto.toEntity()).getId();
-        else throw new EmailExsistFailedCException();
+        String email = userSignupDto.toEntity().getEmail();
+        userRepository.findByEmail(email)
+            .orElseThrow(()-> new EmailExsistFailedCException("이미 해당 이메일로 계정 존재"+email));
+        return userRepository.save(userSignupDto.toEntity()).getId();
     }
 }

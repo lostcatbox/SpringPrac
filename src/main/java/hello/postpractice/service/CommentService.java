@@ -43,7 +43,7 @@ public class CommentService {
     @Transactional
     public CommentDto commentSave(String email, Long postId, CommentDto commentDto) {
         User user = userRepository.findByEmail(email).orElseThrow(()->
-                new UserNotFoundCException());
+                new UserNotFoundCException("해당유저없음"+email));
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new PostNotFoundCException("댓글 쓰기 실패: 해당 게시글이 존재하지 않습니다." + postId));
 
@@ -59,7 +59,7 @@ public class CommentService {
     @Transactional
     public void update(String email, CommentDto commentDto){
         Comment comment = commentRepository.findById(commentDto.getId()).orElseThrow(() ->
-                new CommentNotFoundCException("해당댓글이 존재하지 않습니다"));
+                new CommentNotFoundCException("해당 댓글이 존재하지 않습니다"));
         if (!(comment.getUser().getEmail().equals(email))) { //같은 유저 인지 체크
             throw new UnMatchedUserCException("권한 User가 아닙니다");
         }
@@ -71,8 +71,6 @@ public class CommentService {
     public void delete(String email,Long commentId){
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new CommentNotFoundCException("해당 댓글이 존재하지 않습니다"));
-        System.out.println(comment.getUser().getEmail());
-        System.out.println(email);
         if (!(comment.getUser().getEmail().equals(email) )) { //같은 유저 인지 체크
             throw new UnMatchedUserCException("권한 User가 아닙니다");
         }
