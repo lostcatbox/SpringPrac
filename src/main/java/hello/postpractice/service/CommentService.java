@@ -71,8 +71,6 @@ public class CommentService {
     public void delete(String email,Long commentId){
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new CommentNotFoundCException("해당 댓글이 존재하지 않습니다"));
-        System.out.println(comment.getUser().getEmail());
-        System.out.println(email);
         if (!(comment.getUser().getEmail().equals(email) )) { //같은 유저 인지 체크
             throw new UnMatchedUserCException("권한 User가 아닙니다");
         }
