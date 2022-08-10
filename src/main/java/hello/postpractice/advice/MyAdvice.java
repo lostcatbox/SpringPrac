@@ -25,7 +25,7 @@ public class MyAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult userNotFoundException(HttpServletRequest request, UserNotFoundCException e) {
         log.info(e.getMessage());
-        return responseService.getFailResult();
+        return responseService.getFailResult(e.getMessage());
     }
 
     /*
@@ -35,46 +35,46 @@ public class MyAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult emailLoginFailedCException(HttpServletRequest request, EmailNotFailedCException e) {
         log.info(e.getMessage());
-        return responseService.getFailResult();
+        return responseService.getFailResult(e.getMessage());
     }
 
     @ExceptionHandler(PasswordFailCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult passwordFailException(HttpServletRequest request, PasswordFailCException e) {
         log.info(e.getMessage());
-        return responseService.getFailResult();
+        return responseService.getFailResult(e.getMessage());
     }
 
     @ExceptionHandler(EmailExsistFailedCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult emailExsistFailedCException(HttpServletRequest request, EmailExsistFailedCException e) {
         log.info(e.getMessage());
-        return responseService.getFailResult();
+        return responseService.getFailResult(e.getMessage());
     }
 
     @ExceptionHandler(UnMatchedUserCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult unMathedUserException(HttpServletRequest request, UnMatchedUserCException e) {
         log.info(e.getMessage());
-        return responseService.getFailResult();
+        return responseService.getFailResult(e.getMessage());
     }
     @ExceptionHandler(PostNotFoundCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult postNotFoundException(HttpServletRequest request, PostNotFoundCException e) {
         log.info(e.getMessage());
-        return responseService.getFailResult();
+        return responseService.getFailResult(e.getMessage());
     }
     @ExceptionHandler(CommentNotFoundCException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult commentNotFoundCException(HttpServletRequest request, CommentNotFoundCException e) {
         log.info(e.getMessage());
-        return responseService.getFailResult();
+        return responseService.getFailResult(e.getMessage());
     }
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     protected CommonResult catchNullPointException(HttpServletRequest request, CommentNotFoundCException e) {
         log.info(e.getMessage());
-        return responseService.getFailResult();
+        return responseService.getFailResult(e.getMessage());
     }
 
 }
