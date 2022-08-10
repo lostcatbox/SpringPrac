@@ -12,19 +12,12 @@ public class ResponseService {
 
     // enum으로 api 요청 결과에 대한 code, message를 정의합니다.
     public enum CommonResponse {
-        SUCCESS(0, "성공하였습니디."),
-        FAIL(-1, "실패하였습니다.");
+        SUCCESS("성공하였습니다.");
 
-        int code;
         String msg;
 
-        CommonResponse(int code, String msg) {
-            this.code = code;
+        CommonResponse(String msg) {
             this.msg = msg;
-        }
-
-        public int getCode() {
-            return code;
         }
 
         public String getMsg() {
@@ -52,21 +45,17 @@ public class ResponseService {
         return result;
     }
     // 실패 결과만 처리하는 메소드
-    public CommonResult getFailResult() {
+    public CommonResult getFailResult(String errormsg) {
         CommonResult result = new CommonResult();
-        setFailResult(result);
+        setFailResult(result, errormsg);
         return result;
     }
     // 결과 모델에 api 요청 성공 데이터를 세팅해주는 메소드
     private void setSuccessResult(CommonResult result) {
-        result.setSuccess(true);
-        result.setCode(CommonResponse.SUCCESS.getCode());
         result.setMsg(CommonResponse.SUCCESS.getMsg());
     }
     // API 요청 실패 시 응답 모델을 실패 데이터로 세팅
-    private void setFailResult(CommonResult result) {
-        result.setSuccess(false);
-        result.setCode(CommonResponse.FAIL.getCode());
-        result.setMsg(CommonResponse.FAIL.getMsg());
+    private void setFailResult(CommonResult result,String errormsg) {
+        result.setMsg(errormsg+"인해 실패하였습니다.");
     }
 }
