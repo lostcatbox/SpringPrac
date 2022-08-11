@@ -37,7 +37,7 @@ public class SignController {
         String password = loginMap.get("password");
         UserLoginResponseDto userLoginDto = userService.login(email, password);
 
-        String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto);
+        String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto.getRoles());
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("Authorization", token);
 

@@ -39,13 +39,11 @@ public class JwtProvider {
     }
 
     // Jwt 생성
-    public String createToken(String userPk, UserLoginResponseDto userLoginResponseDto) {
+    public String createToken(String userPk, List roles) {
 
         // user 구분을 위해 Claims에 User Pk값 넣어줌
         Claims claims = Jwts.claims().setSubject(userPk);  //클래임에 userPK 추가
-        claims.put("roles", userLoginResponseDto.getRoles()); //권한 추가
-        claims.put("email", userLoginResponseDto.getEmail());
-        claims.put("username", userLoginResponseDto.getEmail());
+        claims.put("roles", roles.stream().map(Object::toString)); //권한 추가
         Date now = new Date(); // 생성날짜, 만료날짜를 위한 Date
 
         String token = Jwts.builder()
