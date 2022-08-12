@@ -1,5 +1,7 @@
 package hello.postpractice.config;
 
+import hello.postpractice.handler.OAuth2AuthenticationSuccessHandler;
+import hello.postpractice.service.CustomOAuth2UserService;
 import hello.postpractice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +23,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
     private final JwtProvider jwtProvider;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
     @Override
@@ -39,14 +43,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
 
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                    .and()
+                .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()//allow CORS option calls
-                .antMatchers("/","/test/**").permitAll() //test진행하기위해 test/이후 경로는 인증필요없음
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()//allow CORS option calls
+                .antMatchers("/", "/test/**").permitAll() //test진행하기위해 test/이후 경로는 인증필요없음
                 .antMatchers("/login", "/signup").permitAll()
 //                .anyRequest().hasRole("USER")
                 .anyRequest().authenticated()
+                .and()
+                .logout()
+                .logoutSuccessUrl("/")
+                .and()
+                // oauth관련 설정
+                // oauth관련 설정 추가
+                    .oauth2Login() // OAuth2로그인 기능에 대한 여러 설정의 진입점
+                        .userInfoEndpoint() // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정을 담당
+                            .userService(customOAuth2UserService) // 소셜 로그인 성공 시 후속 조치를 진행할 UserService 인터페이스의 구현체를 등록한다., 리소스 서버(즉, 소셜 서비스들)에서 사용자 정보를 가져온 상태에서 추가로 진행하고자 하는 기능을 명시할수있다.
                     .and()
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+
+                .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
     }
 

@@ -29,7 +29,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name="username")
     private String username;
 
-    @Column(name="nickname",nullable = false)
+    @Column(name="nickname", nullable = true)
     private String nickname;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -39,10 +39,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
-
-    public void updateNickName(String nickname) {
-        this.nickname = nickname;
-    }
 
 
     // 사용자의 권한을 콜렉션 형태로 반환
@@ -92,5 +88,9 @@ public class User extends BaseTimeEntity implements UserDetails {
     public boolean isEnabled() {
         // 계정이 사용 가능한지 확인하는 로직
         return true; // true -> 사용 가능
+    }
+    public User update(String username){
+        this.username = username;
+        return this;
     }
 }

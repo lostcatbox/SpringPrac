@@ -40,3 +40,6 @@ out/
 /src/main/resources/application-jwt.yml
 
 # 풀리퀘스트 테스트
+
+## oauth key
+/src/main/resources/application-oauth.properties
