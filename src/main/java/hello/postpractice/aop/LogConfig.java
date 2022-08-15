@@ -1,4 +1,4 @@
-package hello.postpractice.Aop;
+package hello.postpractice.aop;
 
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class LogConfig {
     //around이므로 메서드 실행 전, 후 시점에 메서드 실행함. 본 메서드 실행은 pjp.proceed()
     ////within으로 범위설정가능
-    @Around("within(hello.postpractice.controller.*)")
+    @Around("within(hello.postpractice.controller.*) && !@annotation(hello.postpractice.aop.LogExclusion)") //controller 패키지 안에&& LogExclusion 에너테이션이없을떄 !
     public Object logging(ProceedingJoinPoint pjp) throws Throwable {
         String params = getRequestParams(); //request값 가져오기
 

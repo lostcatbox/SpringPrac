@@ -1,5 +1,6 @@
 package hello.postpractice.controller;
 
+import hello.postpractice.aop.LogExclusion;
 import hello.postpractice.domain.*;
 import hello.postpractice.model.response.CommonResult;
 import hello.postpractice.model.response.ListResult;
