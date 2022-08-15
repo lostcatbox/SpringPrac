@@ -3,6 +3,7 @@ package hello.postpractice.service;
 import hello.postpractice.advice.exception.PostNotFoundCException;
 import hello.postpractice.advice.exception.UnMatchedUserCException;
 import hello.postpractice.advice.exception.UserNotFoundCException;
+import hello.postpractice.aop.CheckAliveUser;
 import hello.postpractice.domain.PostDto;
 import hello.postpractice.domain.Post;
 import hello.postpractice.domain.PostResponseDto;
@@ -18,14 +19,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+ //모든 유저 라이브 유저인지 먼저체크
 public class PostService {
     private final PostRepository postRepository;
 
     private final UserRepository userRepository;
+
+    @CheckAliveUser
     public PostDto savePost(String email, PostDto postDto){
-        // 유저가 필요함. 정보를 jwt에서 가져와야할듯
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundCException("유저없음"));
-        postDto.setUser(user);
+        postDto.setUser(userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundCException("유저없음")));
 
         //postDto에 User까지 반영후, 그다음에 Entity로 전환 후 저장
         Post post = postDto.toEntity();
@@ -33,6 +35,7 @@ public class PostService {
 
         return new PostDto(post);
     }
+    @CheckAliveUser
     public PostDto editPost(String email, PostDto postDto) {
         //해당 postDto에서 id를 찾아 DB조회후 엔티티에 update함수를 활용해 처리
         Post post = postRepository.findById(postDto.getId()).orElseThrow(() -> new PostNotFoundCException("게시글을 찾을수없습니다"));
@@ -43,6 +46,7 @@ public class PostService {
         postRepository.save(post);
         return new PostDto(post);
     }
+    @CheckAliveUser
     public void deletePost(String email,PostDto postDto) {
         Post post = postRepository.findById(postDto.getId()).orElseThrow(() -> new PostNotFoundCException("게시글을 찾을수없습니다"));
         if (!(post.getUser().getEmail().equals(email))) { //같은 유저 인지 체크
@@ -50,6 +54,7 @@ public class PostService {
         }
         postRepository.delete(post);
     }
+    @CheckAliveUser
     @Transactional
     public List<PostDto> getPostList() {
         List<Post> postList = postRepository.findAll();
@@ -61,6 +66,7 @@ public class PostService {
         }
         return postDtoList;
     }
+    @CheckAliveUser
     @Transactional
     public PostDto getPost(Long id){
         Post post = postRepository.findById(id).orElseThrow(()->
@@ -69,6 +75,7 @@ public class PostService {
 
         return postDto;
     }
+    @CheckAliveUser
     @Transactional
     public PostResponseDto getResponseDtoPost(Long id){
         Post posting = postRepository.findById(id).orElseThrow(() ->
