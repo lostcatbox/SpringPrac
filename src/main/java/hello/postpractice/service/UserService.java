@@ -79,4 +79,9 @@ public class UserService {
             .orElseThrow(()-> new EmailExsistFailedCException("이미 해당 이메일로 계정 존재"+email));
         return userRepository.save(userSignupDto.toEntity()).getId();
     }
+    //유저 존재 검증 로직 userService에서 책
+    public User validationUser(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundCException("유저없음"));
+        return user;
+    }
 }

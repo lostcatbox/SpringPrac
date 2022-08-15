@@ -37,6 +37,9 @@ dependencies {
 
 	//spring-boot-starter-oauth2-client와 spring-security-oauth2-jose를 기본으로 관리함
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	//aop 설정
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 tasks.named('test') {
