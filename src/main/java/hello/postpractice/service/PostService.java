@@ -6,7 +6,7 @@ import hello.postpractice.advice.exception.UserNotFoundCException;
 import hello.postpractice.aop.CheckAliveUser;
 import hello.postpractice.domain.PostDto;
 import hello.postpractice.domain.Post;
-import hello.postpractice.domain.PostResponseDto;
+import hello.postpractice.domain.PostDto;
 import hello.postpractice.domain.User;
 import hello.postpractice.repository.PostRepository;
 import hello.postpractice.repository.UserRepository;
@@ -77,10 +77,10 @@ public class PostService {
     }
     @CheckAliveUser
     @Transactional
-    public PostResponseDto getResponseDtoPost(Long id){
+    public PostDto getResponseDtoPost(Long id){
         Post posting = postRepository.findById(id).orElseThrow(() ->
                 new PostNotFoundCException("게시글 id 검색 실패: 해당 게시글이 존재하지 않습니다." + id));
-        PostResponseDto postDto = new PostResponseDto(posting);
+        PostDto postDto = new PostDto(posting);
         return postDto;
     }
 }
