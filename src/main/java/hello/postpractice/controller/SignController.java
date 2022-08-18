@@ -1,8 +1,10 @@
 package hello.postpractice.controller;
 
 import hello.postpractice.config.JwtProvider;
+import hello.postpractice.domain.User;
 import hello.postpractice.domain.UserLoginResponseDto;
 import hello.postpractice.domain.UserSignupRequestDto;
+import hello.postpractice.model.response.CommonResult;
 import hello.postpractice.model.response.SingleResult;
 import hello.postpractice.service.ResponseService;
 import hello.postpractice.service.UserService;
@@ -10,9 +12,15 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,5 +66,17 @@ public class SignController {
                 .build();
         Long signupId = userService.signup(userSignupRequestDto);
         return responseService.getSingleResult(signupId);
+    }
+    @PostMapping("/logout")
+    public CommonResult logout(HttpServletRequest request, HttpServletResponse response){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null){
+            authentication.setAuthenticated(false);
+            new SecurityContextLogoutHandler().logout(request,response,authentication);
+            request.getSession().invalidate();
+            return responseService.getSuccessResult();
+        } else {
+            throw new RuntimeException("로그인안되어있음");
+        }
     }
 }
