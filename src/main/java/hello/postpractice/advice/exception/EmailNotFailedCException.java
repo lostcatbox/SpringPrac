@@ -1,9 +1,9 @@
 package hello.postpractice.advice.exception;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 public class EmailNotFailedCException extends RuntimeException {
-    public EmailNotFailedCException() {
-        super();
-    }
     public EmailNotFailedCException(String message) {
         super(message);
     }
