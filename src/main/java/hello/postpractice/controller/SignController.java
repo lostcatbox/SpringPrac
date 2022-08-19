@@ -1,5 +1,6 @@
 package hello.postpractice.controller;
 
+import hello.postpractice.advice.exception.DataFieldInvalidCException;
 import hello.postpractice.config.JwtProvider;
 import hello.postpractice.domain.User;
 import hello.postpractice.domain.UserLoginResponseDto;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.util.ObjectUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,14 +39,13 @@ public class SignController {
     private final ResponseService responseService;
     private final PasswordEncoder passwordEncoder;
 
-    @ApiOperation(value = "로그인", notes = "이메일로 로그인을 합니다.")
     @PostMapping("/login")
-    public SingleResult<Map> login(
-            @ApiParam(value = "로그인 아이디 : 이메일", required = true) @RequestBody Map<String, String> loginMap) {
-        String email = loginMap.get("username"); //null? 오류처리?
-        String password = loginMap.get("password");
-        UserLoginResponseDto userLoginDto = userService.login(email, password);
+    public SingleResult<Map> login(@RequestBody Map<String, String> loginMap) {
 
+        String email = loginMap.get("email");
+        String password = loginMap.get("password");
+
+        UserLoginResponseDto userLoginDto = userService.login(email, password);
         String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto.getRoles());
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("Authorization", token);
@@ -54,7 +55,7 @@ public class SignController {
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 합니다.")
     @PostMapping("/signup")
-    public SingleResult<Long> signup( @RequestBody Map<String, String> signupMap){
+    public SingleResult<Long> signup(@RequestBody Map<String, String> signupMap){
         String email = signupMap.get("email");
         String password = signupMap.get("password");
         String nickname = signupMap.get("nickname");

@@ -70,9 +70,16 @@ public class MyAdvice {
         log.info(e.getMessage());
         return responseService.getFailResult(e.getMessage());
     }
+    // DataField Invalid
+    @ExceptionHandler(DataFieldInvalidCException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected CommonResult catchDataFieldInvalidCException(HttpServletRequest request,DataFieldInvalidCException e){
+        log.error(e.getMessage());
+        return responseService.getFailResult(e.getMessage());
+    }
     @ExceptionHandler(NullPointerException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    protected CommonResult catchNullPointException(HttpServletRequest request, CommentNotFoundCException e) {
+    protected CommonResult catchNullPointException(HttpServletRequest request, NullPointerException e) {
         log.info(e.getMessage());
         return responseService.getFailResult(e.getMessage());
     }
