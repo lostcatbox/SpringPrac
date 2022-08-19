@@ -42,8 +42,8 @@ public class PostController {
 
     @GetMapping("/{id}")
     public SingleResult<PostDto> getpost(@PathVariable Long id){
-        PostDto PostDto = postService.getResponseDtoPost(id);
-        return responseService.getSingleResult(PostDto);
+        PostDto postDto = postService.getResponseDtoPost(id);
+        return responseService.getSingleResult(postDto);
     }
     @PostMapping
     public SingleResult<PostDto> create(@Validated @RequestBody PostDto postDto, BindingResult bindingResult){

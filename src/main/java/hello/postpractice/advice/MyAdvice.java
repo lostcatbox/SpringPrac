@@ -22,7 +22,7 @@ public class MyAdvice {
      * 유저를 찾지 못했을 때 발생시키는 예외
      */
     @ExceptionHandler(UserNotFoundCException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     protected CommonResult userNotFoundException(HttpServletRequest request, UserNotFoundCException e) {
         log.info(e.getMessage());
         return responseService.getFailResult(e.getMessage());
@@ -32,40 +32,40 @@ public class MyAdvice {
     이메일 찾지못했을때 발생시키는 예외
      */
     @ExceptionHandler(EmailNotFailedCException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     protected CommonResult emailLoginFailedCException(HttpServletRequest request, EmailNotFailedCException e) {
         log.info(e.getMessage());
         return responseService.getFailResult(e.getMessage());
     }
 
     @ExceptionHandler(PasswordFailCException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     protected CommonResult passwordFailException(HttpServletRequest request, PasswordFailCException e) {
         log.info(e.getMessage());
         return responseService.getFailResult(e.getMessage());
     }
 
     @ExceptionHandler(EmailExsistFailedCException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     protected CommonResult emailExsistFailedCException(HttpServletRequest request, EmailExsistFailedCException e) {
         log.info(e.getMessage());
         return responseService.getFailResult(e.getMessage());
     }
 
     @ExceptionHandler(UnMatchedUserCException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     protected CommonResult unMathedUserException(HttpServletRequest request, UnMatchedUserCException e) {
         log.info(e.getMessage());
         return responseService.getFailResult(e.getMessage());
     }
     @ExceptionHandler(PostNotFoundCException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     protected CommonResult postNotFoundException(HttpServletRequest request, PostNotFoundCException e) {
         log.info(e.getMessage());
         return responseService.getFailResult(e.getMessage());
     }
     @ExceptionHandler(CommentNotFoundCException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     protected CommonResult commentNotFoundCException(HttpServletRequest request, CommentNotFoundCException e) {
         log.info(e.getMessage());
         return responseService.getFailResult(e.getMessage());
