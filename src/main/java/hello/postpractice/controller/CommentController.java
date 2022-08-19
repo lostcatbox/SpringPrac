@@ -1,5 +1,6 @@
 package hello.postpractice.controller;
 
+import hello.postpractice.advice.exception.DataFieldInvalidCException;
 import hello.postpractice.domain.CommentDto;
 import hello.postpractice.domain.PostDto;
 import hello.postpractice.domain.User;
@@ -12,10 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -39,7 +43,11 @@ public class CommentController {
 
     @PostMapping
     public SingleResult<CommentDto> commentSave(@PathVariable Long postId,
-                                                @RequestBody CommentDto commentDto){
+                                                @Validated @RequestBody CommentDto commentDto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            List<String> errors = bindingResult.getAllErrors().stream().map(e->e.getDefaultMessage()).collect(Collectors.toList());
+            throw new DataFieldInvalidCException(errors);
+        }
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = ((User)principal).getEmail();
 
@@ -50,7 +58,11 @@ public class CommentController {
     댓글 update
      */
     @PutMapping
-    public SingleResult<CommentDto> update(@RequestBody CommentDto dto){
+    public SingleResult<CommentDto> update(@Validated @RequestBody CommentDto dto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            List<String> errors = bindingResult.getAllErrors().stream().map(e->e.getDefaultMessage()).collect(Collectors.toList());
+            throw new DataFieldInvalidCException(errors);
+        }
         Long commentId = dto.getId();
         String email = getCurrentUserEmail();
         commentService.update(email, dto);
