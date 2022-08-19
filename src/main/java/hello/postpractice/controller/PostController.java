@@ -1,5 +1,6 @@
 package hello.postpractice.controller;
 
+import hello.postpractice.advice.exception.DataFieldInvalidCException;
 import hello.postpractice.aop.LogExclusion;
 import hello.postpractice.domain.*;
 import hello.postpractice.model.response.CommonResult;
@@ -14,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("basic/post")
@@ -42,12 +46,20 @@ public class PostController {
         return responseService.getSingleResult(PostDto);
     }
     @PostMapping
-    public SingleResult<PostDto> create(@RequestBody PostDto postDto){
+    public SingleResult<PostDto> create(@Validated @RequestBody PostDto postDto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            List<String> errors = bindingResult.getAllErrors().stream().map(e->e.getDefaultMessage()).collect(Collectors.toList());
+            throw new DataFieldInvalidCException(errors);
+        }
         String email = getCurrentUserEmail();
         return responseService.getSingleResult(postService.savePost(email, postDto));
     }
     @PutMapping()
-    public SingleResult<PostDto> update(@RequestBody PostDto postDto){
+    public SingleResult<PostDto> update(@Validated @RequestBody PostDto postDto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            List<String> errors = bindingResult.getAllErrors().stream().map(e->e.getDefaultMessage()).collect(Collectors.toList());
+            throw new DataFieldInvalidCException(errors);
+        }
         String email = getCurrentUserEmail();
         return responseService.getSingleResult(postService.editPost(email,postDto));
     }

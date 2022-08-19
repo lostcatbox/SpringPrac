@@ -1,7 +1,9 @@
 package hello.postpractice.domain;
 
+import com.sun.istack.NotNull;
 import lombok.*;
 
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,7 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 public class PostDto {
     private Long id;
+    @Size(max=10)
     private String postName;
+    @Size(max=200)
     private String content;
     private User user;
     private LocalDateTime createdDate;
