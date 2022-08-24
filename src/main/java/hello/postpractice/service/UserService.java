@@ -75,7 +75,6 @@ public class UserService {
     @Transactional
     public Long signup(UserSignupRequestDto userSignupDto) {
         String email = userSignupDto.toEntity().getEmail();
-
         if (userRepository.findByEmail(email).isPresent()) {
             throw new EmailExsistFailedCException("이미 해당이메일 존재 " + email);
         }else {

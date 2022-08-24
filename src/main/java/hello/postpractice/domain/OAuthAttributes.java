@@ -45,7 +45,7 @@ public class OAuthAttributes {
         return User.builder()
                 .username(name)
                 .email(email)
-                .roles(Collections.singletonList("ROLE_USER"))
+                .auth("ROLE_USER") // 기본 OAuth가입자는 ROLE_USER로 고정
                 .build();
     }
 

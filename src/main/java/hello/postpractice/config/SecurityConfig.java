@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()//allow CORS option calls
                 .antMatchers("/", "/test/**").permitAll() //test진행하기위해 test/이후 경로는 인증필요없음
                 .antMatchers("/login", "/signup", "/logout").permitAll()
-//                .anyRequest().hasRole("USER")
+                .antMatchers("/basic/**").hasRole("USER") //USER 만 접속가능
                 .anyRequest().authenticated()
                 .and()
                 .logout()

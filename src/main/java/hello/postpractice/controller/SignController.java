@@ -46,7 +46,7 @@ public class SignController {
         String password = loginMap.get("password");
 
         UserLoginResponseDto userLoginDto = userService.login(email, password);
-        String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto.getRoles());
+        String token = jwtProvider.createToken(String.valueOf(userLoginDto.getId()), userLoginDto.getAuth());
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("Authorization", token);
 
@@ -59,11 +59,18 @@ public class SignController {
         String email = signupMap.get("email");
         String password = signupMap.get("password");
         String nickname = signupMap.get("nickname");
+        String auth = signupMap.get("auth");
+        if (auth.isEmpty()) {
+            auth = "ROLE_USER"; //""이라면 ROLE_USER 로 default
+        } else {
+            auth = signupMap.get("auth");  //"ROLE_USER,ROLE_ADMIN" 이런식으로 들어옴
+        }
 
         UserSignupRequestDto userSignupRequestDto = UserSignupRequestDto.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .nickname(nickname)
+                .auth(auth)
                 .build();
         Long signupId = userService.signup(userSignupRequestDto);
         return responseService.getSingleResult(signupId);
