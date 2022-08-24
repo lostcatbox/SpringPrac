@@ -68,6 +68,7 @@ public class SignController {
         Long signupId = userService.signup(userSignupRequestDto);
         return responseService.getSingleResult(signupId);
     }
+
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
