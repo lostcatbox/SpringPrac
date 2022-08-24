@@ -2,6 +2,8 @@ package hello.postpractice.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.management.relation.Role;
 import javax.validation.constraints.NotBlank;
@@ -16,10 +18,17 @@ import java.util.Collections;
 @Getter
 public class UserSignupRequestDto {
 
+    @NotEmpty
+    @Size(max=30)
     private String email;
+
+    @NotEmpty
+    @Size(max=30)
     private String password;
+    @Size(max=30)
     private String nickname;
 
+    @NotEmpty
     private String auth;
 
     @Builder
