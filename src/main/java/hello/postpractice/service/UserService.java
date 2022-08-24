@@ -75,9 +75,11 @@ public class UserService {
     @Transactional
     public Long signup(UserSignupRequestDto userSignupDto) {
         String email = userSignupDto.toEntity().getEmail();
-        userRepository.findByEmail(email)
-            .orElseThrow(()-> new EmailExsistFailedCException("이미 해당 이메일로 계정 존재"+email));
-        return userRepository.save(userSignupDto.toEntity()).getId();
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new EmailExsistFailedCException("이미 해당이메일 존재 " + email);
+        }else {
+            return userRepository.save(userSignupDto.toEntity()).getId();
+        }
     }
     //유저 존재 검증 로직 userService에서 책
     public User validationUser(String email){

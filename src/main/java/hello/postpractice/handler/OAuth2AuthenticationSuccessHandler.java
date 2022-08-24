@@ -47,7 +47,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         DefaultOAuth2User defaultOAuth2User = (DefaultOAuth2User) authentication.getPrincipal();//OidcUser??DefaultOidcUser??
         User user = userRepository.findByEmail(defaultOAuth2User.getAttribute("email")).orElseThrow(EmailNotFailedCException::new);
 
-        String token = jwtProvider.createToken(String.valueOf(user.getId()),user.getRoles()); //role 안잡힐껄?
+        String token = jwtProvider.createToken(String.valueOf(user.getId()),user.getAuth());
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token",token)
                 .build().toUriString();

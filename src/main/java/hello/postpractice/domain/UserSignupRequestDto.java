@@ -17,11 +17,14 @@ public class UserSignupRequestDto {
     private String password;
     private String nickname;
 
+    private String auth;
+
     @Builder
-    public UserSignupRequestDto(String email, String password, String nickname) {
+    public UserSignupRequestDto(String email, String password, String nickname, String auth) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
+        this.auth = auth;
     }
 
     public User toEntity() {
@@ -29,7 +32,7 @@ public class UserSignupRequestDto {
                 .email(email)
                 .password(password)
                 .nickname(nickname)
-                .roles(Collections.singletonList("ROLE_USER"))
+                .auth(auth)
                 .build();
     }
 }

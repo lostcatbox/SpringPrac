@@ -36,18 +36,19 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
-
+    //auth라는 String값을 만듬(ROLE_USER,ROLE_ADMIN 활용시)
+    @Column(name = "auth")
+    private String auth;
 
     // 사용자의 권한을 콜렉션 형태로 반환
     // 단, 클래스 자료형은 GrantedAuthority를 구현해야함
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles
-                .stream().map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        Set<GrantedAuthority> roles = new HashSet<>();
+        for (String role : auth.split(",")) {
+            roles.add(new SimpleGrantedAuthority(role));
+        }
+        return roles;
     }
 
     // 사용자의 id를 반환 (unique한 값)
