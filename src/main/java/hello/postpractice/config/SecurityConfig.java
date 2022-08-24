@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,9 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
         http
                 .httpBasic().disable()
                 .csrf().disable()
-                .cors() //cors 관련해서 허용
-                .and()
-
 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -57,7 +55,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
                 .anyRequest().authenticated()
                 .and()
                 .logout()
-                .logoutSuccessHandler((new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)))
+                .logoutUrl("/logout")
+                .clearAuthentication(true)//로그 아웃시 인증정보를 지움
+                .invalidateHttpSession(true) //세션을 무효화 시킨다
+                .logoutSuccessHandler((new MyLogoutSuccessHandler())) //커스텀 successhadler호출
                 .and()
                 // oauth관련 설정
                 // oauth관련 설정 추가
