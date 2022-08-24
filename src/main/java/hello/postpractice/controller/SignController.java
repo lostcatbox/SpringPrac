@@ -68,16 +68,4 @@ public class SignController {
         Long signupId = userService.signup(userSignupRequestDto);
         return responseService.getSingleResult(signupId);
     }
-    @PostMapping("/logout")
-    public CommonResult logout(HttpServletRequest request, HttpServletResponse response){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null){
-            authentication.setAuthenticated(false);
-            new SecurityContextLogoutHandler().logout(request,response,authentication);
-            request.getSession().invalidate();
-            return responseService.getSuccessResult();
-        } else {
-            throw new RuntimeException("로그인안되어있음");
-        }
-    }
 }

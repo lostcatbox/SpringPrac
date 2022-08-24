@@ -40,7 +40,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
-
     // 사용자의 권한을 콜렉션 형태로 반환
     // 단, 클래스 자료형은 GrantedAuthority를 구현해야함
     @Override
