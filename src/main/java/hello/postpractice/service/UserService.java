@@ -71,7 +71,7 @@ public class UserService {
             throw new PasswordFailCException("비밀번호 오류"+email);
         return new UserLoginResponseDto(user);
     }
-
+    
     @Transactional
     public Long signup(UserSignupRequestDto userSignupDto) {
         String email = userSignupDto.toEntity().getEmail();

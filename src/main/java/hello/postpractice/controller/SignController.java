@@ -75,16 +75,14 @@ public class SignController {
         Long signupId = userService.signup(userSignupRequestDto);
         return responseService.getSingleResult(signupId);
     }
+
     @PostMapping("/logout")
-    public CommonResult logout(HttpServletRequest request, HttpServletResponse response){
+    public void logout(HttpServletRequest request, HttpServletResponse response){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null){
-            authentication.setAuthenticated(false);
-            new SecurityContextLogoutHandler().logout(request,response,authentication);
-            request.getSession().invalidate();
-            return responseService.getSuccessResult();
+        if (authentication != null){ //authentication은 인증이되어있는지?
+            new SecurityContextLogoutHandler().logout(request,response,authentication); //로그아웃 핸들러를 호출해 로그아웃처리(authentication=null, session만료 등의 기능포함됨)
         } else {
-            throw new RuntimeException("로그인안되어있음");
+            throw new RuntimeException("로그인필요");
         }
     }
 }
