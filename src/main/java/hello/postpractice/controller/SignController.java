@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.util.ObjectUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Api(tags = "1. SignUp / LogIn")
 @RequiredArgsConstructor
@@ -55,22 +57,16 @@ public class SignController {
 
     @ApiOperation(value = "회원가입", notes = "회원가입을 합니다.")
     @PostMapping("/signup")
-    public SingleResult<Long> signup(@RequestBody Map<String, String> signupMap){
-        String email = signupMap.get("email");
-        String password = signupMap.get("password");
-        String nickname = signupMap.get("nickname");
-        String auth = signupMap.get("auth");
-        if (auth.isEmpty()) {
-            auth = "ROLE_USER"; //""이라면 ROLE_USER 로 default
-        } else {
-            auth = signupMap.get("auth");  //"ROLE_USER,ROLE_ADMIN" 이런식으로 들어옴
+    public SingleResult<Long> signup(@Validated @RequestBody UserSignupRequestDto requestuserSignupRequestDto, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            List<String> errors = bindingResult.getAllErrors().stream().map(e->e.getDefaultMessage()).collect(Collectors.toList());
+            throw new DataFieldInvalidCException(errors);
         }
-
         UserSignupRequestDto userSignupRequestDto = UserSignupRequestDto.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .nickname(nickname)
-                .auth(auth)
+                .email(requestuserSignupRequestDto.getEmail())
+                .password(passwordEncoder.encode(requestuserSignupRequestDto.getPassword())) //password 암호화시 password이런식으로 다시 꺼내와줘야하나?
+                .nickname(requestuserSignupRequestDto.getNickname())
+                .auth(requestuserSignupRequestDto.getAuth())
                 .build();
         Long signupId = userService.signup(userSignupRequestDto);
         return responseService.getSingleResult(signupId);
