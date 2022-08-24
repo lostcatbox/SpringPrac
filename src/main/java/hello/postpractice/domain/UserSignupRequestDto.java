@@ -8,6 +8,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 @Getter
@@ -29,7 +32,7 @@ public class UserSignupRequestDto {
                 .email(email)
                 .password(password)
                 .nickname(nickname)
-                .roles(Collections.singletonList("ROLE_USER"))
+                .roles(new ArrayList<>(Arrays.asList("ROLE_USER","ROLE_ADMIN"))) //역할두개?
                 .build();
     }
 }
