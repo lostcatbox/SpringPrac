@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter { // 2
                         .successHandler(oAuth2AuthenticationSuccessHandler)
 
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class); //UsernamePasswordAuthenticationFilter보다 먼저 filter로 등록
     }
 
     @Override

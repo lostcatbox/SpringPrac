@@ -59,7 +59,7 @@ public class JwtProvider {
     // Jwt 로 인증정보를 조회
     public Authentication getAuthentication (String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));  //UserDetailsService에서 loadUserByUsername 호출하여, UserDetails 인스턴스획득
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities()); //두번째 생성자로 바로 true인 인증된 Authentication 생성됨
     }
 
     // jwt 에서 회원 구분 Pk 추출
