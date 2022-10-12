@@ -38,7 +38,6 @@ public class Post {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
-
     @ManyToOne(fetch =FetchType.EAGER)
     @JoinColumn(name="user_id")
     private User user;
